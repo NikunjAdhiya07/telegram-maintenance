@@ -8,6 +8,7 @@ import SyncUsersButton from "@/components/SyncUsersButton";
 import TicketCard from "@/components/TicketCard";
 import Capsule from "@/components/Capsule";
 import SharePendingWorkModal from "@/components/SharePendingWorkModal";
+import AddTicketModal from "@/components/AddTicketModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { 
   BarChart3, Info, Activity, CheckCircle2, Share2, X, 
@@ -77,6 +78,7 @@ function DashboardContent() {
 
   const [initialAgencyName, setInitialAgencyName] = useState<string>('');
   const [showSearch, setShowSearch] = useState(false);
+  const [showAddTicket, setShowAddTicket] = useState(false);
 
   // Global state for excluded tickets from summary (persisted in localStorage)
   const [excludedTicketIds, setExcludedTicketIds] = useState<Set<string>>(() => {
@@ -876,6 +878,17 @@ function DashboardContent() {
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 dashboard-content">
         {/* Top Filters: Advanced Toggle */}
         <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3 mb-3 sm:mb-6">
+          {/* Add Ticket Button */}
+          {!isReadOnly && (
+            <button
+              onClick={() => setShowAddTicket(true)}
+              className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 mr-auto rounded-xl text-sm sm:text-base font-medium transition-all border shadow-sm bg-gradient-to-r from-blue-600 to-purple-600 text-white border-transparent hover:from-blue-700 hover:to-purple-700"
+              title="Add new ticket"
+            >
+              <Plus className="w-4 h-4" />
+              <span className="hidden sm:inline">Add </span>Ticket
+            </button>
+          )}
           {/* Search Icon Button */}
           <button
             onClick={() => {
@@ -2198,6 +2211,17 @@ function DashboardContent() {
       })()}
     </div>
     
+    {/* Add Ticket Modal */}
+    <AddTicketModal
+      isOpen={showAddTicket}
+      onClose={() => setShowAddTicket(false)}
+      onCreated={() => mutate()}
+      categories={categories}
+      subCategories={subCategories}
+      agencies={agencies}
+      hierarchicalLocations={hierarchicalLocations}
+    />
+
     {/* Share Pending Work Modal */}
     <SharePendingWorkModal
       isOpen={!!shareModalAgency}
